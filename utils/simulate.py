@@ -75,7 +75,7 @@ class Simulate():
         #predictors
         X0 = np.ones(shape=(n,1))
         X1 = rng.uniform(low=-2, high=2, size=(n,1))
-        X2 = rng.normal(loc=0, scale=1, size=(n,1))
+        X2 = rng.uniform(low=-2, high=2, size=(n,1))
         X3 = rng.normal(loc=0, scale=1, size=(n,1))
         X4 = rng.normal(loc=0, scale=1, size=(n,1))
         X5 = rng.normal(loc=0, scale=1, size=(n,1))
