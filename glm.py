@@ -39,8 +39,8 @@ def compare_sklearn(features: int) -> None:
         datasets.make_regression(
             n_samples=3000000, 
             n_features=features, 
-            n_informative=10, 
-            noise=0, 
+            n_informative=5, 
+            noise=1, 
             coef=True)
     data: DataFrame = \
         pd.DataFrame(
