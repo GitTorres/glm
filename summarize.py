@@ -46,6 +46,9 @@ def _get_feature_summary_data(
         wtd_avg_target=df["sum_target"] / df["sum_weight"],
     )
 
+    # drop categories with no observations
+    df = df[df.sum_weight > 0]
+
     response: FeatureSummaryData = df.to_dict("list")
 
     return response
@@ -184,7 +187,7 @@ def main() -> None:
         model_info: GLMBasicInfo = {
             "formula": wilk_formula,
             "features": features,
-            "name": f"model {i}",
+            "name": f"model_{i}",
             "prediction": PREDICTION_COL_NAME,
             "target": TARGET_COL_NAME,
         }
