@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series
 from patsy.highlevel import dmatrices
-from glm_summary_types import (
+from glm_types import (
     GLMEstimatorSummary,
     FeatureSummary,
     FeatureSummaryData,
@@ -160,8 +160,6 @@ def summarize(
         **scores_payload,
         **summaries_payload,
     }
-
-    print(summaries_payload)
 
     # return payload associated with the data
     return GLMEstimatorSummary(**summary_payload)
