@@ -4,14 +4,11 @@ Create model summary objects to save to Mongodb for reproducibility
 """
 
 import abc
-from typing import List, Optional, Dict, TypeVar, Generic, TypedDict
+from typing import List, Dict, TypedDict
 from urllib.parse import quote_plus
 import time
 from uuid import uuid4
 from pymongo import MongoClient
-
-
-T = TypeVar("T")  # pylint: disable=invalid-name
 
 
 class GLMBasicInfo(TypedDict):  # pylint: disable=missing-class-docstring
@@ -48,20 +45,20 @@ class GLMSummaryPayload(TypedDict):  # pylint: disable=missing-class-docstring
     feature_summary: List[FeatureSummary]
 
 
-class SupervisedEstimatorSummary(Generic[T], metaclass=abc.ABCMeta):
+class SupervisedEstimatorSummary(metaclass=abc.ABCMeta):
     """Abstract class which forces Estimator Summaries to define a save() and show() method"""
 
     def __init__(
         self,
         name: str,
         desc: str,
-        target: T,
-        prediction: T,
+        target: str,
+        prediction: str,
     ) -> None:
         self.name: str = name
         self.desc: str = desc
-        self.target: Optional[T] = target
-        self.prediction: Optional[T] = prediction
+        self.target: str = target
+        self.prediction: str = prediction
 
     @abc.abstractmethod
     def show(self) -> Dict:
@@ -74,25 +71,25 @@ class SupervisedEstimatorSummary(Generic[T], metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class GLMEstimatorSummary(SupervisedEstimatorSummary[T]):
+class GLMEstimatorSummary(SupervisedEstimatorSummary):
     """GLM Estimator"""
 
     def __init__(
         self,
         name: str,
         desc: str,
-        target: T,
-        prediction: T,
-        var_weights: T,
-        link_function: T,
-        error_dist: T,
+        target: str,
+        prediction: str,
+        var_weights: str,
+        link_function: str,
+        error_dist: str,
         explained_variance: float,
         feature_summary: List[FeatureSummary],
     ) -> None:
         super().__init__(name, desc, target, prediction)
-        self.var_weights: T = var_weights
-        self.link_function: T = link_function
-        self.error_dist: T = error_dist
+        self.var_weights: str = var_weights
+        self.link_function: str = link_function
+        self.error_dist: str = error_dist
         self.feature_summary = feature_summary
         self.explained_variance = explained_variance
 

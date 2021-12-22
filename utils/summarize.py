@@ -72,7 +72,7 @@ def gen_data() -> DataFrame:
     """
 
     # generate regression data set
-    X, y = datasets.make_regression(
+    X, y, coef = datasets.make_regression(
         n_samples=1000000, n_features=15, n_informative=5, noise=5, coef=True
     )
 
@@ -122,7 +122,7 @@ def fit_predict(df: DataFrame, formula: str) -> Series:
 def summarize(
     df: DataFrame,
     info: GLMBasicInfo,
-) -> GLMEstimatorSummary[str]:
+) -> GLMEstimatorSummary:
 
     # store payload in object
 
@@ -164,7 +164,7 @@ def summarize(
     print(summaries_payload)
 
     # return payload associated with the data
-    return GLMEstimatorSummary[str](**summary_payload)
+    return GLMEstimatorSummary(**summary_payload)
 
 
 def main() -> None:
@@ -192,7 +192,7 @@ def main() -> None:
         }
 
         # get summary of model (the juice right here)
-        doc: GLMEstimatorSummary[str] = summarize(df=data, info=model_info)
+        doc: GLMEstimatorSummary = summarize(df=data, info=model_info)
 
         # save summary document to database
         doc.save()
