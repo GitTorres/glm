@@ -1,7 +1,11 @@
+from typing import List, Dict
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series
 from patsy.highlevel import dmatrices
+from sklearn.metrics import explained_variance_score
+from sklearn import datasets
+from sklearn.linear_model import LinearRegression
 from glm_types import (
     GLMEstimatorSummary,
     FeatureSummary,
@@ -9,10 +13,7 @@ from glm_types import (
     GLMBasicInfo,
     GLMSummaryPayload,
 )
-from typing import List, Dict
-from sklearn.metrics import explained_variance_score
-from sklearn import datasets
-from sklearn.linear_model import LinearRegression
+
 
 NUM_DATASETS = 10
 OUT_PATH = "./regression_data"
@@ -127,9 +128,7 @@ def summarize(
     info: GLMBasicInfo,
 ) -> GLMEstimatorSummary:
 
-    # store payload in object
-
-    # identifiers
+    ## IDENTIFIERS
     desc_payload = {
         "name": info["name"],
         "desc": info["formula"],
@@ -137,22 +136,25 @@ def summarize(
         "prediction": info["prediction"],
     }
 
-    # model error structure
+    ## MODEL ERROR STRUCTURE
     error_payload = {
         "var_weights": "weight",
         "link_function": "identity",
         "error_dist": "gaussian",
     }
 
-    # scoring
-    scores_payload = {
-        "explained_variance": explained_variance_score(
-            df[info["target"]], df[info["prediction"]]
-        )
-    }
+    ## SCORING
 
-    # feature summaries
-    summaries_payload: Dict[str, List[FeatureSummary]] = {
+    # explained variance
+    expv = explained_variance_score(df[info["target"]], df[info["prediction"]])
+
+    # other scores (TBD) ...
+
+    # combined scores payload
+    scores_payload = {"explained_variance": expv}
+
+    ## FEATURE SUMMARIES
+    feat_summaries_payload: Dict[str, List[FeatureSummary]] = {
         "feature_summary": _feature_summaries(df, info)
     }
 
@@ -161,7 +163,7 @@ def summarize(
         **desc_payload,  # type: ignore
         **error_payload,
         **scores_payload,
-        **summaries_payload,
+        **feat_summaries_payload,
     }
 
     # return payload associated with the data
@@ -169,6 +171,9 @@ def summarize(
 
 
 def main() -> None:
+    """
+    Simulate modeling data for 10 random regression models, and save model summaries to db
+    """
     # generate modeling data
     for i in range(0, NUM_DATASETS):
         # simulate regression data (sklearn used for underlying pseudorandom numbers)
