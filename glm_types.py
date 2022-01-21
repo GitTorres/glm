@@ -2,13 +2,10 @@
 Module Purpose:
 Create model summary objects to save to Mongodb for reproducibility
 """
-
+from dataclasses import dataclass
 import abc
 from typing import List, Dict, TypedDict
-from urllib.parse import quote_plus
-import time
-from uuid import uuid4
-from pymongo import MongoClient
+import requests
 
 
 class GLMBasicInfo(TypedDict):  # pylint: disable=missing-class-docstring
@@ -71,49 +68,21 @@ class SupervisedEstimatorSummary(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
+@dataclass
 class GLMEstimatorSummary(SupervisedEstimatorSummary):
-    """GLM Estimator"""
+    """
+    Regression model summaries.
+    """
 
-    def __init__(
-        self,
-        name: str,
-        desc: str,
-        target: str,
-        prediction: str,
-        var_weights: str,
-        link_function: str,
-        error_dist: str,
-        explained_variance: float,
-        feature_summary: List[FeatureSummary],
-    ) -> None:
-        super().__init__(name, desc, target, prediction)
-        self.var_weights: str = var_weights
-        self.link_function: str = link_function
-        self.error_dist: str = error_dist
-        self.feature_summary = feature_summary
-        self.explained_variance = explained_variance
-
-    def _save_model_summary_to_db(
-        self, client: MongoClient, db: str, collection: str
-    ) -> Dict:
-
-        # get db
-        mydb = client[db]
-
-        # get collection
-        clcn = mydb[collection]
-
-        # add model summary to collection
-        created_at = time.time()
-        info = clcn.insert_one(
-            {"_id": uuid4(), "created_time": created_at, **self.show()}
-        )
-
-        return {
-            "name": self.name,
-            "inserted_id": info.inserted_id,
-            "created_time": created_at,
-        }
+    name: str
+    desc: str
+    target: str
+    prediction: str
+    var_weights: str
+    link_function: str
+    error_dist: str
+    explained_variance: float
+    feature_summary: List[FeatureSummary]
 
     def show(self) -> Dict:
         """View summary of estimator statistics"""
@@ -121,17 +90,14 @@ class GLMEstimatorSummary(SupervisedEstimatorSummary):
         return {k: v for k, v in self.__dict__.items() if "__" not in k}
 
     def save(self) -> None:
+        """Save model summary to db"""
+
+        url = "http://localhost:8000/modelsummary/regression"
         assert all(self.__dict__.values()), "Set all properties before saving"
 
-        # get client
-        username = quote_plus("root")
-        password = quote_plus("OTNmYTdjYmZkMjE5ZmYzODg0MDZiYWJh")
-        uri = f"mongodb://{username}:{password}@localhost:27017/?uuidRepresentation=standard"
-        client = MongoClient(uri)
+        response = requests.put(url, json=self.show())
 
-        # save model to Mongo db
-        response = self._save_model_summary_to_db(
-            client, db="models", collection="models"
-        )
-
-        print(response)
+        if response.text != "error":
+            print(f"model summary saved at {response.text}")
+        else:
+            print("error saving model summary")
