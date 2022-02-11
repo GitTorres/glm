@@ -6,7 +6,7 @@ from patsy.highlevel import dmatrices
 from sklearn.metrics import explained_variance_score
 from sklearn import datasets
 from sklearn.linear_model import LinearRegression
-from glm_estimator import (
+from .glm_estimator import (
     GLMEstimatorSummary,
     FeatureSummary,
     FeatureSummaryData,

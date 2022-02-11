@@ -6,7 +6,9 @@ from patsy.highlevel import dmatrices
 from sklearn.metrics import explained_variance_score
 from sklearn import datasets
 from sklearn.linear_model import LinearRegression
-from src.model_lens.app import summarize, GLMBasicInfo, GLMEstimatorSummary
+
+# from src.model_lens.app import summarize, GLMBasicInfo, GLMEstimatorSummary
+from lens_model import summarize, GLMBasicInfo, GLMEstimatorSummary
 
 
 def test():
@@ -34,10 +36,12 @@ def test():
         "name": "breast cancer model 1",
         "prediction": "predicted",
         "target": "worst concave points",
-        "weight": "weight"
+        "weight": "weight",
     }
 
     doc: GLMEstimatorSummary = summarize(df=data, info=model_info)
+
+    # print(doc.created_time)
 
     # save summary document to database
     doc.save()
