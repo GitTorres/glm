@@ -1,11 +1,12 @@
 """
 Module Purpose:
-Create model summary objects to save to Mongodb for reproducibility
+Create model summary objects for reproducibility
 """
 from dataclasses import dataclass
 import abc
 from typing import List, Dict, TypedDict
 import requests
+from datetime import datetime, timezone
 
 
 class GLMBasicInfo(TypedDict):  # pylint: disable=missing-class-docstring
@@ -83,6 +84,7 @@ class GLMEstimatorSummary(SupervisedEstimatorSummary):
     error_dist: str
     explained_variance: float
     feature_summary: List[FeatureSummary]
+    created_time: str = "2000-00-00T00:00:00.0000+0000"
 
     def show(self) -> Dict:
         """View summary of estimator statistics"""
@@ -92,9 +94,11 @@ class GLMEstimatorSummary(SupervisedEstimatorSummary):
     def save(self) -> None:
         """Save model summary to db"""
 
-        url = "http://localhost:8000/modelsummary/regression"
         assert all(self.__dict__.values()), "Set all properties before saving"
 
+        self.created_time = str(datetime.now(timezone.utc))
+
+        url = "http://api.lensview.io/modelsummary/regression"
         response = requests.put(url, json=self.show())
 
         if response.text != "error":

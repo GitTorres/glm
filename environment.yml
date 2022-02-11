@@ -1,3 +1,5 @@
+# @format
+
 name: lens-analysis
 channels:
   - defaults
@@ -7,5 +9,4 @@ dependencies:
   - scikit-learn
   - numpy
   - pandas
-  - pymongo
-prefix: /opt/homebrew/Caskroom/miniconda/base/envs/lens-analysis
+# prefix: /opt/homebrew/Caskroom/miniconda/base/envs/lens-analysis
