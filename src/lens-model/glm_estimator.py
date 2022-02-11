@@ -15,6 +15,7 @@ class GLMBasicInfo(TypedDict):  # pylint: disable=missing-class-docstring
     features: List[str]
     prediction: str
     target: str
+    weight: str
 
 
 class FeatureSummaryData(TypedDict):  # pylint: disable=missing-class-docstring
