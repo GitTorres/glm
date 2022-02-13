@@ -5,8 +5,10 @@ channels:
   - defaults
 dependencies:
   - python=3.8.11
-  - patsy
-  - scikit-learn
   - numpy
   - pandas
-# prefix: /opt/homebrew/Caskroom/miniconda/base/envs/lens-analysis
+  - scikit-learn
+  - patsy
+  - pandas-profiling
+  - pip:
+      - lens-model-cith==0.0.1

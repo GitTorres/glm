@@ -1,11 +1,7 @@
 from typing import List, Dict
-import numpy as np
 import pandas as pd
-from pandas import DataFrame, Series
-from patsy.highlevel import dmatrices
+from pandas import DataFrame
 from sklearn.metrics import explained_variance_score
-from sklearn import datasets
-from sklearn.linear_model import LinearRegression
 from .glm_estimator import (
     GLMEstimatorSummary,
     FeatureSummary,
